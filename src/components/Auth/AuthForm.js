@@ -3,6 +3,14 @@ import { useHistory } from "react-router-dom";
 
 import classes from "./AuthForm.module.css";
 import { AuthContext } from "../../store/auth-context";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
+const eye = <FontAwesomeIcon icon={faEye} />;
+
+const eyeSlash = <FontAwesomeIcon icon={faEyeSlash} />;
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -10,11 +18,17 @@ const AuthForm = () => {
   const history = useHistory();
   const authCtx = useContext(AuthContext);
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
+  };
+
+  const togglePasswordVisiblity = () => {
+    setShowPassword(showPassword ? false : true);
   };
 
   const submitHandler = async (e) => {
@@ -97,7 +111,7 @@ const AuthForm = () => {
 
       if (res.ok) {
         authCtx.login(data.idToken);
-        history.push("/");
+        history.replace("/");
       } else {
         throw new Error(data.error.message);
       }
@@ -117,11 +131,15 @@ const AuthForm = () => {
         <div className={classes.control}>
           <label htmlFor="password">Your Password</label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             required
             ref={passwordInputRef}
+            className={classes["input-password"]}
           />
+          <i onClick={togglePasswordVisiblity}>
+            {showPassword ? eyeSlash : eye}
+          </i>
         </div>
         <div className={classes.actions}>
           {!isLoading && (

@@ -17,6 +17,8 @@
 
 .control {
   margin-bottom: 0.5rem;
+  position: relative;
+
 }
 
 .control label {
@@ -36,6 +38,25 @@
   text-align: left;
   padding: 0.25rem;
 }
+
+.control i {
+  position: absolute;
+  color: #000;
+  bottom: 8%;
+  right: 2%;
+  cursor: pointer;
+}
+
+
+/* i {
+  position: absolute;
+  top: 38%;
+  right: 16%;
+}
+i:hover {
+  color: #00fcb6;
+  cursor: pointer;
+} */
 
 .actions {
   margin-top: 1.5rem;
