@@ -1,10 +1,14 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 
-import classes from './AuthForm.module.css';
+import classes from "./AuthForm.module.css";
+import { AuthContext } from "../../store/auth-context";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
+  const authCtx = useContext(AuthContext);
 
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
@@ -23,10 +27,10 @@ const AuthForm = () => {
 
     if (isLogin) {
       url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA5gDXU2oie50gIt4DB0W5z4xfFNGhkxDw';
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA5gDXU2oie50gIt4DB0W5z4xfFNGhkxDw";
     } else {
       url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA5gDXU2oie50gIt4DB0W5z4xfFNGhkxDw';
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA5gDXU2oie50gIt4DB0W5z4xfFNGhkxDw";
     }
 
     // setIsLoading(true);
@@ -77,9 +81,9 @@ const AuthForm = () => {
     setIsLoading(true);
     try {
       const res = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: enteredEmail,
@@ -92,6 +96,8 @@ const AuthForm = () => {
       setIsLoading(false);
 
       if (res.ok) {
+        authCtx.login(data.idToken);
+        history.push("/");
       } else {
         throw new Error(data.error.message);
       }
@@ -102,32 +108,32 @@ const AuthForm = () => {
 
   return (
     <section className={classes.auth}>
-      <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
+      <h1>{isLogin ? "Login" : "Sign Up"}</h1>
       <form onSubmit={submitHandler}>
         <div className={classes.control}>
-          <label htmlFor='email'>Your Email</label>
-          <input type='email' id='email' required ref={emailInputRef} />
+          <label htmlFor="email">Your Email</label>
+          <input type="email" id="email" required ref={emailInputRef} />
         </div>
         <div className={classes.control}>
-          <label htmlFor='password'>Your Password</label>
+          <label htmlFor="password">Your Password</label>
           <input
-            type='password'
-            id='password'
+            type="password"
+            id="password"
             required
             ref={passwordInputRef}
           />
         </div>
         <div className={classes.actions}>
           {!isLoading && (
-            <button>{isLogin ? 'Login' : 'Create Account'}</button>
+            <button>{isLogin ? "Login" : "Create Account"}</button>
           )}
           {isLoading && <p>Sending request...</p>}
           <button
-            type='button'
+            type="button"
             className={classes.toggle}
             onClick={switchAuthModeHandler}
           >
-            {isLogin ? 'Create new account' : 'Login with existing account'}
+            {isLogin ? "Create new account" : "Login with existing account"}
           </button>
         </div>
       </form>
