@@ -1,12 +1,12 @@
-import { useRef, useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useRef, useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 
-import classes from './AuthForm.module.css';
-import { AuthContext } from '../../store/auth-context';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import classes from "./AuthForm.module.css";
+import { AuthContext } from "../../store/auth-context";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faEye } from '@fortawesome/free-solid-svg-icons';
-import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const eye = <FontAwesomeIcon icon={faEye} />;
 
@@ -41,10 +41,10 @@ const AuthForm = () => {
 
     if (isLogin) {
       url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA5gDXU2oie50gIt4DB0W5z4xfFNGhkxDw';
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA5gDXU2oie50gIt4DB0W5z4xfFNGhkxDw";
     } else {
       url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA5gDXU2oie50gIt4DB0W5z4xfFNGhkxDw';
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA5gDXU2oie50gIt4DB0W5z4xfFNGhkxDw";
     }
 
     // setIsLoading(true);
@@ -95,9 +95,9 @@ const AuthForm = () => {
     setIsLoading(true);
     try {
       const res = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: enteredEmail,
@@ -110,9 +110,15 @@ const AuthForm = () => {
       setIsLoading(false);
 
       if (res.ok) {
-        authCtx.login(data.idToken);
+        const expirationTime = new Date(
+          new Date().getTime() + +data.expiresIn * 1000
+        );
+
+        console.log(expirationTime);
+
+        authCtx.login(data.idToken, expirationTime.toISOString());
         // history.goBack();
-        history.replace('/');
+        history.replace("/");
       } else {
         throw new Error(data.error.message);
       }
@@ -123,20 +129,20 @@ const AuthForm = () => {
 
   return (
     <section className={classes.auth}>
-      <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
+      <h1>{isLogin ? "Login" : "Sign Up"}</h1>
       <form onSubmit={submitHandler}>
         <div className={classes.control}>
-          <label htmlFor='email'>Your Email</label>
-          <input type='email' id='email' required ref={emailInputRef} />
+          <label htmlFor="email">Your Email</label>
+          <input type="email" id="email" required ref={emailInputRef} />
         </div>
         <div className={classes.control}>
-          <label htmlFor='password'>Your Password</label>
+          <label htmlFor="password">Your Password</label>
           <input
-            type={showPassword ? 'text' : 'password'}
-            id='password'
+            type={showPassword ? "text" : "password"}
+            id="password"
             required
             ref={passwordInputRef}
-            className={classes['input-password']}
+            className={classes["input-password"]}
           />
           <i onClick={togglePasswordVisiblity}>
             {showPassword ? eyeSlash : eye}
@@ -144,15 +150,15 @@ const AuthForm = () => {
         </div>
         <div className={classes.actions}>
           {!isLoading && (
-            <button>{isLogin ? 'Login' : 'Create Account'}</button>
+            <button>{isLogin ? "Login" : "Create Account"}</button>
           )}
           {isLoading && <p>Sending request...</p>}
           <button
-            type='button'
+            type="button"
             className={classes.toggle}
             onClick={switchAuthModeHandler}
           >
-            {isLogin ? 'Create new account' : 'Login with existing account'}
+            {isLogin ? "Create new account" : "Login with existing account"}
           </button>
         </div>
       </form>
