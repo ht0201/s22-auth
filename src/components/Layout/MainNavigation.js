@@ -1,31 +1,33 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from 'react-router-dom';
 
-import classes from "./MainNavigation.module.css";
-import { AuthContext } from "../../store/auth-context";
-import { useContext } from "react";
+import classes from './MainNavigation.module.css';
+import { AuthContext } from '../../store/auth-context';
+import { useContext } from 'react';
 
 const MainNavigation = () => {
   const authCtx = useContext(AuthContext);
   const { isLoggedIn } = authCtx;
+  const history = useHistory();
 
   const onLogoutHandler = () => {
     authCtx.logout();
+    history.goBack();
   };
   return (
     <header className={classes.header}>
-      <Link to="/">
+      <Link to='/'>
         <div className={classes.logo}>React Auth</div>
       </Link>
       <nav>
         <ul>
           {!isLoggedIn && (
             <li>
-              <Link to="/auth">Login</Link>
+              <Link to='/auth'>Login</Link>
             </li>
           )}
           {isLoggedIn && (
             <li>
-              <Link to="/profile">Profile</Link>
+              <Link to='/profile'>Profile</Link>
             </li>
           )}
           {isLoggedIn && (
